@@ -4,7 +4,7 @@ from src.assets import Assets
 from src.rocket import Rocket
 from src.collision import Collision
 from src.spawn import Spawn
-
+from src.effects import Effects
 import src.constants as constants
 
 import random
@@ -35,12 +35,15 @@ rocket = Rocket(assets.display_rocket, assets.get_rocket_size(), (width, height)
 
 spawn = Spawn(screen, (width, height), constants, assets)
 
-collision = Collision(game.calculate_character_position, rocket, screen, constants)
+collision = Collision(game.calculate_character_position, rocket, screen, constants, spawn)
+
+effects = Effects(screen, (width, height), constants, assets)
 
 game.set_params(assets.display_obstacle, assets.display_character)
 
 current_background_offset = 0
 center_time = 0
+shield_pop_time = 0
 running = True
 game_over = False
 display_warning = False
@@ -60,8 +63,11 @@ while running:
                 # send_warning = False
                 game.reset()
                 rocket.reset()
+                effects.reset()
+                spawn.reset()
                 center_time = 0
                 score = 0
+                shield_pop_time = 0
                 current_background_offset = 0
                 obstacle_frequency = constants.OBSTACLE_FREQUENCY
                 last_obstacle = pygame.time.get_ticks()
@@ -86,6 +92,9 @@ while running:
             last_powerup = time_now
             powerup_frequency = random.randint(*constants.POWERUOP_FREQUENCY_RANGE)
 
+        #effects handling
+        effects.handle_effects()
+
         if game.character_side == "center":
             center_time += constants.STAMINA_GAIN
             #warming
@@ -106,6 +115,9 @@ while running:
             game_over = True
         if collision.check_rocket_collision() and game.character_side == "center":
             game_over = True
+        spawnable_collision = collision.check_spawnable_collision()
+        if spawnable_collision.get("collision"):
+            effects.add_effect(spawnable_collision["type"])
         screen.fill(constants.BACKGROUND_COLOR)
         game.decrement_obstacles()
         rocket.decrement_rockets(game.speed)
@@ -116,8 +128,7 @@ while running:
             current_background_offset = 0
         assets.display_background(current_background_offset)
         assets.display_background(current_background_offset - height)
-        # screen.fill(constants.BACKGROUND_COLOR)
-        # game.draw_log()
+
         game.draw_obstacles()
         spawn.display_spawnables()
         game.draw_character()
@@ -147,6 +158,19 @@ while running:
             pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(width/2 - warning.get_width()/2 - 15, warning.get_height() - 15,warning.get_width() + 30,warning.get_height() + 30), 0, 5)
             screen.blit(warning, (width/2 - warning.get_width()/2, warning.get_height()))
         
+        #shield popping
+        if game_over and effects.shield:
+            game_over = False
+            effects.shield = False
+            shield_pop_time = pygame.time.get_ticks()
+            effects.add_effect("shield-pop-immunity")
+
+        #check for shield popping immunity
+        if game_over:
+
+            game_over = False
+
+
 
 
     pygame.display.update()

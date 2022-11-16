@@ -27,3 +27,17 @@ STAMINA_LOSS = 10
 ROCKET_HITBOX_TOP_CUT = 75
 
 POWERUOP_FREQUENCY_RANGE = (1000, 2000)
+
+EFFECTS = {
+    "powerup-shield": {
+        "total_duration": 0,
+    },
+    "powerup-stamina": {
+        "total_duration": 15000,
+    },
+    "shield-pop-immunity": {
+        "total_duration": 1,
+    }
+}
+
+SHIELD_POP_IMMUNITY = 1000

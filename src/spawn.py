@@ -14,6 +14,9 @@ class Spawn:
         self.assets = assets
         # {"position": "left", "top_offset": 0, "type": "powerup"}
 
+    def reset(self):
+        self.spawnables = []
+
     def add_spawnable(self, position, typeE):
         self.spawnables.append({"position": position, "top_offset": 0, "type": typeE})
 
@@ -59,5 +62,4 @@ class Spawn:
             pos = self.calculate_spawnable_position(spawnable)
             self.screen.blit(image, pos[:2])   
             # pygame.draw.rect(self.screen, (50, 50, 120), pygame.Rect(pos))
-    
     

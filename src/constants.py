@@ -26,18 +26,26 @@ STAMINA_LOSS = 10
 
 ROCKET_HITBOX_TOP_CUT = 75
 
-POWERUOP_FREQUENCY_RANGE = (1000, 2000)
+POWERUOP_FREQUENCY_RANGE = (15000, 23000)
 
 EFFECTS = {
     "powerup-shield": {
         "total_duration": 0,
+        "chance": 0.6
     },
     "powerup-stamina": {
-        "total_duration": 15000,
+        "total_duration": 10000,
+        "multiplier": 1/3,
+        "chance": 1
     },
     "shield-pop-immunity": {
-        "total_duration": 1,
+        "total_duration": 1000,
     }
 }
 
 SHIELD_POP_IMMUNITY = 1000
+SHIELD_PATH = "assets/shield.png"
+
+
+stamina_bar = (252, 65, 3)
+boosted_stamina_bar = (90, 252, 3)

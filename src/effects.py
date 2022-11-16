@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 
@@ -15,10 +16,14 @@ class Effects:
         self.assets = assets
         self.shield = False
         self.game_over = False
+        self.immunity = False
+        self.stamina_multiplier = 1
 
     def reset(self):
         self.effects = []
         self.shield = False
+        self.immunity = False
+        self.stamina_multiplier = 1
 
     def add_effect(self, typeE):
         self.effects.append({"status": typeE, "time_started": pygame.time.get_ticks(), "total_duration": self.constants.EFFECTS[typeE]["total_duration"]})
@@ -35,19 +40,30 @@ class Effects:
                 case "powerup-shield":
                     self.shield = True
                     self.effects.pop(index)
-                case "powerup-stamina":
-                    pass
                 case "shield-pop-immunity":
-                    if self.effects[index]["time_started"] + self.constants.EFFECTS["shield-pop-immunity"]["total_duration"] < pygame.time.get_ticks():
-                        self.game_over = False
+                    if self.effects[index]["time_started"] + self.constants.EFFECTS["shield-pop-immunity"]["total_duration"] > pygame.time.get_ticks():
+                        self.immunity = True
                     else:
+                        self.immunity = False
                         self.effects.pop(index)
+                case "powerup-stamina":
+                    if self.effects[index]["time_started"] + self.constants.EFFECTS["powerup-stamina"]["total_duration"] > pygame.time.get_ticks():
+                        self.stamina_multiplier = self.constants.EFFECTS["powerup-stamina"]["multiplier"]
+                    else:
+                        self.stamina_multiplier = 1
+                        self.effects.pop(index)
+
+    def get_effect_drop(self):
+        r = random.random()
+        for effect in self.constants.EFFECTS:
+            if r < self.constants.EFFECTS[effect]["chance"]:
+                return effect
                     
                 # case "powerup-stamina":
                     # return self.assets.potions.get("green")
 
 
-    # def calculate_spawnable_position(self, spawnable):
+    # def calculate_status_position(self, spawnable):
     #     if spawnable["position"] == "left":
     #         modifier = -1
     #     elif spawnable["position"] == "right":

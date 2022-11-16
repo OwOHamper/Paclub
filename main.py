@@ -35,11 +35,11 @@ rocket = Rocket(assets.display_rocket, assets.get_rocket_size(), (width, height)
 
 spawn = Spawn(screen, (width, height), constants, assets)
 
-collision = Collision(game.calculate_character_position, rocket, screen, constants, spawn)
+collision = Collision(game.calculate_character_hitbox_position, rocket, screen, constants, spawn)
 
 effects = Effects(screen, (width, height), constants, assets)
 
-game.set_params(assets.display_obstacle, assets.display_character)
+game.set_params(assets.display_obstacle, assets.display_character, assets)
 
 current_background_offset = 0
 center_time = 0
@@ -88,7 +88,7 @@ while running:
             score += 1
             last_obstacle = time_now
         if time_now - last_powerup > powerup_frequency / game.speed:
-            spawn.add_spawnable(random.choice(("left", "center", "right")), random.choice(("powerup-shield", "powerup-stamina")))
+            spawn.add_spawnable(random.choice(("left", "center", "right")), effects.get_effect_drop())
             last_powerup = time_now
             powerup_frequency = random.randint(*constants.POWERUOP_FREQUENCY_RANGE)
 
@@ -96,7 +96,7 @@ while running:
         effects.handle_effects()
 
         if game.character_side == "center":
-            center_time += constants.STAMINA_GAIN
+            center_time += constants.STAMINA_GAIN * effects.stamina_multiplier
             #warming
             display_warning = center_time >= constants.CENTER_TIME_LIMIT / 2
             if center_time >= constants.CENTER_TIME_LIMIT:
@@ -131,7 +131,7 @@ while running:
 
         game.draw_obstacles()
         spawn.display_spawnables()
-        game.draw_character()
+        game.draw_character(effects.shield, effects.immunity)
         rocket.display_rockets()
 
         if game.speed < 2.0:
@@ -146,10 +146,19 @@ while running:
         scoretext = myfont.render(f"Speed: {round(game.speed, 2)}", 1, (0,0,0))
         screen.blit(scoretext, (0,25))
         # print(100*(center_time/constants.CENTER_TIME_LIMIT))
-        #center stamina
-        pygame.draw.rect(screen, (0,0,0),       pygame.Rect(0,height-25,190,15))
-        pygame.draw.rect(screen, (191, 21, 207), pygame.Rect(0,height-25,190*(center_time/constants.CENTER_TIME_LIMIT),15))
-        pygame.draw.rect(screen, (255, 255, 255),       pygame.Rect(0,height-25,190,15), 1)
+
+        #stamina bar
+
+        if effects.stamina_multiplier == 1:
+            stamina_color = constants.stamina_bar
+        else:
+            stamina_color = constants.boosted_stamina_bar
+        # progress bar background
+        pygame.draw.rect(screen, (0,0,0), pygame.Rect(0,height-25,190,15))
+        # progress bar
+        pygame.draw.rect(screen, stamina_color, pygame.Rect(0,height-25,190*(center_time/constants.CENTER_TIME_LIMIT),15))
+        # outline
+        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(0,height-25,190,15), 1)
 
         # if send_warning:
             # assets.display_rocket((150, 150))
@@ -166,8 +175,7 @@ while running:
             effects.add_effect("shield-pop-immunity")
 
         #check for shield popping immunity
-        if game_over:
-
+        if game_over and effects.immunity:
             game_over = False
 
 

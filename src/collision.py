@@ -2,8 +2,8 @@ import pygame
 
 
 class Collision:
-    def __init__(self, calculate_character_position, Rocket, screen, constants, spawn) -> None:
-        self.calculate_character_position = calculate_character_position
+    def __init__(self, calculate_character_hitbox_position, Rocket, screen, constants, spawn) -> None:
+        self.calculate_character_hitbox_position = calculate_character_hitbox_position
         # self.calculate_rocket_position = calculate_rocket_position
         self.Rocket = Rocket
         self.screen = screen
@@ -20,14 +20,14 @@ class Collision:
         for rocket in self.Rocket.rockets:
             #temporary hitbox
             # pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(self.calculate_rocket_hitbox(rocket)))
-            if pygame.Rect(self.calculate_character_position()).colliderect(
+            if pygame.Rect(self.calculate_character_hitbox_position()).colliderect(
                 pygame.Rect(self.calculate_rocket_hitbox(rocket))):
                 return True
         return False
 
     def check_spawnable_collision(self):
         for index, spawnable in enumerate(self.spawn.spawnables):
-            if pygame.Rect(self.calculate_character_position()).colliderect(
+            if pygame.Rect(self.calculate_character_hitbox_position()).colliderect(
                 pygame.Rect(self.spawn.calculate_spawnable_position(spawnable))):
                 r = {"collision": True, "type": spawnable["type"]}
                 self.spawn.spawnables.pop(index)

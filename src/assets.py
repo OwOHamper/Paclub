@@ -26,8 +26,10 @@ class Assets:
         return pygame.transform.rotate(image, angle)
 
     def load_images(self):
+        self.character = []
+        for i in range(1, 14):
+            self.character.append(self.load_image(f"assets/steve/{i+1}.png"))
         self.background = self.load_image(self.constants.BACKGROUND_PATH)
-        self.character = self.load_image(self.constants.CHARACTER_PATH)
         self.obstacle = self.load_image(self.constants.OBSTACLE_PATH)
         self.rocket = self.load_image(self.constants.ROCKET_PATH)
         self.rocket = self.scale_image(self.rocket, 0.5)
@@ -45,7 +47,10 @@ class Assets:
             "pink": self.pink_potion,
             "yellow": self.yellow_potion
         }
-    
+        self.shield = self.load_image(self.constants.SHIELD_PATH)
+        self.shield = self.scale_image(self.shield, 0.4)
+
+
     def display_background(self, offset):
         self.display_image(self.background, (0, offset))
 

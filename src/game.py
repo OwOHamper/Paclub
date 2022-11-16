@@ -2,7 +2,7 @@ import pygame
 import random
 
 class Game:
-    def __init__(self, screen, resolution, constants, ) -> None:
+    def __init__(self, screen, resolution, constants) -> None:
         self.screen = screen
         self.resolution = resolution
         self.width = resolution[0]
@@ -14,6 +14,7 @@ class Game:
         self.obstacles = []
         self.speed = 1
         self.last_three_obstacles = []
+        self.counter = 0
 
     def reset(self):
         self.obstacles = []
@@ -21,9 +22,10 @@ class Game:
         self.character_side = "left"
         self.last_three_obstacles = []
 
-    def set_params(self, display_obstacle, display_character):
+    def set_params(self, display_obstacle, display_character, assets):
         self.display_obstacle = display_obstacle
         self.display_character = display_character
+        self.assets = assets
 
     def update_side(self, side):
         if side == "right":
@@ -59,7 +61,7 @@ class Game:
     
     def check_for_collision(self):
         for obstacle in self.obstacles:
-            if pygame.Rect(self.calculate_character_position()).colliderect(pygame.Rect(self.calculate_obstacle_position(obstacle))):
+            if pygame.Rect(self.calculate_character_hitbox_position()).colliderect(pygame.Rect(self.calculate_obstacle_position(obstacle))):
                 return True
         return False
 
@@ -81,6 +83,25 @@ class Game:
             modifier = 0
         # modifier = -1  elif self.character_side_on_left == "right" 1 else 0
         return (self.width/2 + modifier * self.constants.CHARACTER_OFFSET_FROM_LOG 
+            - (self.assets.character[0].get_width()/2)
+                + modifier * self.constants.LOG_SIZE
+                ,
+                self.height -
+                self.assets.character[0].get_height()*2,
+
+                self.assets.character[0].get_width(),
+                
+                self.assets.character[0].get_height())
+
+    def calculate_character_hitbox_position(self):
+        if self.character_side == "left":
+            modifier = -1
+        elif self.character_side == "right":
+            modifier = 1
+        else:
+            modifier = 0
+        # modifier = -1  elif self.character_side_on_left == "right" 1 else 0
+        return (self.width/2 + modifier * self.constants.CHARACTER_OFFSET_FROM_LOG 
             - (self.constants.CHARACTER_SIZE/2)
                 + modifier * self.constants.LOG_SIZE
                 ,
@@ -90,6 +111,25 @@ class Game:
                 self.constants.CHARACTER_SIZE,
                 
                 self.constants.CHARACTER_SIZE)
+
+    def calculate_shield_position(self):
+        if self.character_side == "left":
+            modifier = -1
+        elif self.character_side == "right":
+            modifier = 1
+        else:
+            modifier = 0
+        # modifier = -1  elif self.character_side_on_left == "right" 1 else 0
+        return (self.width/2 + modifier * self.constants.CHARACTER_OFFSET_FROM_LOG 
+            - (self.assets.shield.get_width()/2)
+                + modifier * self.constants.LOG_SIZE
+                ,
+                self.height -
+                self.assets.shield.get_height()*1.3,
+
+                self.assets.shield.get_width(),
+                
+                self.assets.shield.get_height())
 
     def calculate_obstacle_position(self, obstacle):
         modifier = -1 if obstacle["position"] == "left" else 1
@@ -110,10 +150,21 @@ class Game:
                 
                 self.constants.OBSTACLE_SIZE[1])
 
-    def draw_character(self):
+    def draw_character(self, shield, immunity):
         # pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(self.calculate_character_position()))
-        self.display_character(self.calculate_character_position())
-    
+        pos = self.calculate_character_position()
+        shield_pos = self.calculate_shield_position()
+        self.screen.blit(self.assets.character[int(self.counter/5)], pos)
+        if shield:
+            self.assets.shield.set_alpha(150)
+            self.screen.blit(self.assets.shield, shield_pos)
+        if immunity:
+            self.assets.shield.set_alpha(50)
+            self.screen.blit(self.assets.shield, shield_pos)
+        self.counter += 1
+        if self.counter >= 5*len(self.assets.character):
+            self.counter = 0
+
     def draw_obstacles(self):
         for index, obstacle in enumerate(self.obstacles):
             position = self.calculate_obstacle_position(obstacle)

@@ -3,7 +3,7 @@ import pygame
 
 
 class Spawn:
-    def __init__(self, screen, resolution, constants) -> None:
+    def __init__(self, screen, resolution, constants, assets) -> None:
         self.screen = screen
         self.resolution = resolution
         self.width = resolution[0]
@@ -11,16 +11,20 @@ class Spawn:
         self.constants = constants
 
         self.spawnables = []
+        self.assets = assets
         # {"position": "left", "top_offset": 0, "type": "powerup"}
 
     def add_spawnable(self, position, typeE):
         self.spawnables.append({"position": position, "top_offset": 0, "type": typeE})
 
-    def get_spawnable_size(self, spawnable):
-        if spawnable["type"] == "powerup":
-            return (25, 25)
-        # elif spawnable["type"] == "obstacle":
-            # return (25, 25)
+    def get_spawnable_image(self, spawnable):
+        match spawnable["type"]:
+            case "powerup":
+                return (25, 25)
+            case "powerup-shield":
+                return self.assets.potions.get("blue")
+            case "powerup-stamina":
+                return self.assets.potions.get("green")
 
     def calculate_spawnable_position(self, spawnable):
         if spawnable["position"] == "left":
@@ -29,7 +33,8 @@ class Spawn:
             modifier = 1
         else:
             modifier = 0
-        size = self.get_spawnable_size(spawnable)
+        image = self.get_spawnable_image(spawnable)
+        size = (image.get_width(), image.get_height())
         
         return  (self.width/2 + modifier * self.constants.CHARACTER_OFFSET_FROM_LOG 
                 - (size[0]/2)
@@ -50,5 +55,9 @@ class Spawn:
                 self.spawnables.pop(index)
 
         for spawnable in self.spawnables:
-            pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(self.calculate_spawnable_position(spawnable)))
-            # self.display_rocket(self.calculate_rocket_position(spawnable))
+            image = self.get_spawnable_image(spawnable)
+            pos = self.calculate_spawnable_position(spawnable)
+            self.screen.blit(image, pos[:2])   
+            # pygame.draw.rect(self.screen, (50, 50, 120), pygame.Rect(pos))
+    
+    

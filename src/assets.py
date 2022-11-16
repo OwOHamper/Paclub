@@ -33,6 +33,18 @@ class Assets:
         self.rocket = self.scale_image(self.rocket, 0.5)
         self.rocket = self.rotate_image(self.rocket, 135)
         # self.rocket.resize()
+
+        self.blue_potion = self.load_image(self.constants.BLUE_POTION_PATH)
+        self.green_potion = self.load_image(self.constants.GREEN_POTION_PATH)
+        self.pink_potion = self.load_image(self.constants.PINK_POTION_PATH)
+        self.yellow_potion = self.load_image(self.constants.YELLOW_POTION_PATH)
+
+        self.potions = {
+            "blue": self.blue_potion,
+            "green": self.green_potion,
+            "pink": self.pink_potion,
+            "yellow": self.yellow_potion
+        }
     
     def display_background(self, offset):
         self.display_image(self.background, (0, offset))

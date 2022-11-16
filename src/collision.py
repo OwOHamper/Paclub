@@ -2,7 +2,7 @@ import pygame
 
 
 class Collision:
-    def __init__(self, calculate_character_position, Rocket, screen, constants) -> None:
+    def __init__(self, calculate_character_position, Rocket, screen, constants, spawnable) -> None:
         self.calculate_character_position = calculate_character_position
         # self.calculate_rocket_position = calculate_rocket_position
         self.Rocket = Rocket

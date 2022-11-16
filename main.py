@@ -32,8 +32,10 @@ game = Game(screen, (width, height), constants)
 assets = Assets(screen, (width, height), constants)
 assets.load_images()
 rocket = Rocket(assets.display_rocket, assets.get_rocket_size(), (width, height))
+
+spawn = Spawn(screen, (width, height), constants, assets)
+
 collision = Collision(game.calculate_character_position, rocket, screen, constants)
-spawn = Spawn(screen, (width, height), constants)
 
 game.set_params(assets.display_obstacle, assets.display_character)
 
@@ -80,7 +82,7 @@ while running:
             score += 1
             last_obstacle = time_now
         if time_now - last_powerup > powerup_frequency / game.speed:
-            spawn.add_spawnable(random.choice(("left", "center", "right")), random.choice(("powerup-shield")))
+            spawn.add_spawnable(random.choice(("left", "center", "right")), random.choice(("powerup-shield", "powerup-stamina")))
             last_powerup = time_now
             powerup_frequency = random.randint(*constants.POWERUOP_FREQUENCY_RANGE)
 

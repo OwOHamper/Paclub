@@ -49,6 +49,15 @@ class Assets:
         }
         self.shield = self.load_image(self.constants.SHIELD_PATH)
         self.shield = self.scale_image(self.shield, 0.4)
+        self.danger = self.load_image(self.constants.DANGER_PATH)
+
+        # self.display_title = self.load_image(self.constants.DISPLAY_TITLE_PATH)
+        self.play_button = self.load_image(self.constants.PLAY_BUTTON_PATH)
+        self.play_button_hover = self.load_image(self.constants.PLAY_BUTTON_HOVER_PATH)
+        self.options_button = self.load_image(self.constants.OPTIONS_BUTTON_PATH)
+        self.options_button_hover = self.load_image(self.constants.OPTIONS_BUTTON_HOVER_PATH)
+        self.quit_button = self.load_image(self.constants.QUIT_BUTTON_PATH)
+        self.quit_button_hover = self.load_image(self.constants.QUIT_BUTTON_HOVER_PATH)
 
 
     def display_background(self, offset):

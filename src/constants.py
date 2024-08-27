@@ -18,6 +18,18 @@ GREEN_POTION_PATH = "assets/green-potion.png"
 PINK_POTION_PATH = "assets/pink-potion.png"
 YELLOW_POTION_PATH = "assets/yellow-potion.png"
 
+DANGER_PATH = "assets/danger.png"
+
+DISPLAY_TITLE_PATH = "assets/paclub.png"
+PLAY_BUTTON_PATH = "assets/play.png"
+PLAY_BUTTON_HOVER_PATH = "assets/play-hover.png"
+OPTIONS_BUTTON_PATH = "assets/options.png"
+OPTIONS_BUTTON_HOVER_PATH = "assets/options-hover.png"
+QUIT_BUTTON_PATH = "assets/quit.png"
+QUIT_BUTTON_HOVER_PATH = "assets/quit-hover.png"
+
+FONT_D3 = "fonts/D3Petitbitmapism.ttf"
+
 
 CENTER_TIME_LIMIT = 2000
 
